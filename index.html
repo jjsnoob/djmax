@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NEON // RHYTHM</title>
+
+<style>
+*{box-sizing:border-box}
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#05070d;
+    color:#fff;
+    font-family:Arial,"Noto Sans KR",sans-serif;
+    user-select:none;
+}
+button{font:inherit}
+
+:root{
+    --cyan:#35e7ff;
+    --blue:#4169ff;
+    --purple:#a85cff;
+    --pink:#ff4fb3;
+    --bg:#05070d;
+}
+
+/* =========================
+   COMMON
+========================= */
+
+.screen{
+    position:absolute;
+    inset:0;
+    display:none;
+}
+.screen.active{display:block}
+
+.glow{
+    text-shadow:
+        0 0 8px currentColor,
+        0 0 22px currentColor;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+#loading{
+    background:
+        radial-gradient(circle at 50% 45%,#17244a 0,#090d1c 35%,#030409 75%);
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+#loading.active{display:flex}
+
+.loading-title{
+    font-size:52px;
+    font-weight:900;
+    letter-spacing:8px;
+    color:#fff;
+    animation:loadPulse 1.5s infinite alternate;
+}
+
+.loading-sub{
+    margin-top:12px;
+    color:#83a8d8;
+    letter-spacing:4px;
+    font-size:13px;
+}
+
+.loading-bar{
+    margin:35px auto 0;
+    width:280px;
+    height:3px;
+    background:#1b2336;
+    overflow:hidden;
+}
+
+.loading-bar i{
+    display:block;
+    width:0;
+    height:100%;
+    background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));
+    animation:loading 1.7s ease forwards;
+}
+
+@keyframes loading{
+    to{width:100%}
+}
+@keyframes loadPulse{
+    from{opacity:.65;filter:brightness(.8)}
+    to{opacity:1;filter:brightness(1.4)}
+}
+
+/* =========================
+   MENU
+========================= */
+
+#menu{
+    background:
+        linear-gradient(120deg,rgba(18,31,72,.7),transparent 45%),
+        radial-gradient(circle at 70% 35%,rgba(104,61,190,.25),transparent 35%),
+        #05070d;
+}
+
+.menu-bg{
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(90deg,transparent 0 49.8%,rgba(255,255,255,.035) 50%,transparent 50.2%),
+        linear-gradient(0deg,transparent 0 49.8%,rgba(255,255,255,.025) 50%,transparent 50.2%);
+    background-size:80px 80px;
+    opacity:.25;
+}
+
+.logo{
+    position:absolute;
+    left:70px;
+    top:50px;
+}
+
+.logo-main{
+    font-size:38px;
+    font-weight:900;
+    letter-spacing:8px;
+}
+
+.logo-line{
+    width:180px;
+    height:3px;
+    margin-top:8px;
+    background:linear-gradient(90deg,var(--cyan),transparent);
+}
+
+.menu-panel{
+    position:absolute;
+    left:7vw;
+    top:50%;
+    transform:translateY(-50%);
+    width:500px;
+}
+
+.menu-title{
+    font-size:14px;
+    color:#7593bc;
+    letter-spacing:5px;
+    margin-bottom:20px;
+}
+
+.song-list{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.song{
+    height:70px;
+    padding:0 25px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-left:3px solid transparent;
+    background:rgba(20,28,48,.45);
+    transition:.12s;
+}
+
+.song .name{
+    font-size:20px;
+    font-weight:bold;
+    letter-spacing:1px;
+}
+
+.song .artist{
+    font-size:11px;
+    color:#7184a6;
+    margin-top:5px;
+}
+
+.song .difficulty{
+    color:#b7c9ec;
+    font-size:11px;
+    letter-spacing:2px;
+}
+
+.song.selected{
+    transform:translateX(16px);
+    border-left-color:var(--cyan);
+    background:
+        linear-gradient(90deg,rgba(53,231,255,.15),rgba(77,74,190,.13));
+    box-shadow:0 0 30px rgba(53,231,255,.08);
+}
+
+.song.selected .name{
+    color:var(--cyan);
+    text-shadow:0 0 12px rgba(53,231,255,.65);
+}
+
+.controls{
+    position:absolute;
+    bottom:45px;
+    left:70px;
+    color:#637a9d;
+    font-size:11px;
+    letter-spacing:2px;
+}
+
+.controls b{color:#c6d7f2}
+
+/* =========================
+   SETTINGS
+========================= */
+
+#settings{
+    background:
+        radial-gradient(circle at 50% 45%,rgba(54,78,145,.22),transparent 50%),
+        #05070d;
+}
+
+.settings-box{
+    position:absolute;
+    width:680px;
+    max-width:90vw;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    padding:40px 50px;
+    background:rgba(8,13,27,.92);
+    border:1px solid rgba(91,137,210,.35);
+    box-shadow:0 0 70px rgba(40,100,190,.12);
+}
+
+.settings-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    border-bottom:1px solid #26334d;
+    padding-bottom:18px;
+    margin-bottom:28px;
+}
+
+.settings-header h1{
+    margin:0;
+    font-size:28px;
+    letter-spacing:4px;
+}
+
+.settings-header span{
+    font-size:11px;
+    color:#63799e;
+}
+
+.setting-row{
+    margin:26px 0;
+}
+
+.setting-label{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:12px;
+}
+
+.setting-label span:first-child{
+    color:#a8b9d6;
+    letter-spacing:2px;
+    font-size:12px;
+}
+
+.setting-value{
+    color:var(--cyan);
+    font-weight:bold;
+}
+
+.range{
+    width:100%;
+    accent-color:var(--cyan);
+    cursor:pointer;
+}
+
+.offset-preview{
+    height:100px;
+    position:relative;
+    margin-top:15px;
+    border:1px solid #1c2b43;
+    background:linear-gradient(#0b1120,#080c17);
+    overflow:hidden;
+}
+
+.offset-line{
+    position:absolute;
+    left:0;
+    right:0;
+    top:50%;
+    height:3px;
+    transform:translateY(-50%);
+    background:var(--cyan);
+    box-shadow:0 0 12px var(--cyan);
+}
+
+.preview-note{
+    position:absolute;
+    width:45px;
+    height:14px;
+    left:calc(50% - 22px);
+    top:20px;
+    background:#fff;
+    box-shadow:0 0 12px #fff;
+}
+
+.setting-buttons{
+    display:flex;
+    gap:12px;
+    margin-top:30px;
+}
+
+.btn{
+    flex:1;
+    height:48px;
+    border:1px solid #344a70;
+    background:#0b1222;
+    color:#a9bfdf;
+    cursor:pointer;
+    letter-spacing:2px;
+}
+
+.btn:hover{
+    border-color:var(--cyan);
+    color:#fff;
+}
+
+.btn.primary{
+    background:linear-gradient(90deg,#14385a,#281c55);
+    border-color:var(--cyan);
+    color:#fff;
+}
+
+/* =========================
+   GAME
+========================= */
+
+#game{
+    background:#03050b;
+}
+
+.game-top{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:65px;
+    z-index:10;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 30px;
+    background:linear-gradient(#070b15,rgba(7,11,21,.5));
+    border-bottom:1px solid #15223a;
+}
+
+.game-song{
+    font-size:14px;
+    letter-spacing:2px;
+}
+
+.game-pattern{
+    color:#758bab;
+    font-size:10px;
+    margin-left:15px;
+}
+
+.game-score{
+    font-size:19px;
+    font-weight:bold;
+    color:#dce8ff;
+    letter-spacing:2px;
+}
+
+.speed-display{
+    position:absolute;
+    right:30px;
+    top:80px;
+    z-index:20;
+    text-align:right;
+}
+
+.speed-display small{
+    display:block;
+    color:#62799e;
+    font-size:9px;
+    letter-spacing:2px;
+}
+
+.speed-display strong{
+    font-size:26px;
+    color:var(--cyan);
+}
+
+.game-field{
+    position:absolute;
+    top:65px;
+    bottom:0;
+    left:50%;
+    width:min(720px,76vw);
+    transform:translateX(-50%);
+    background:
+        linear-gradient(90deg,
+            transparent 0,
+            rgba(35,60,105,.12) 10%,
+            rgba(24,39,72,.2) 50%,
+            rgba(35,60,105,.12) 90%,
+            transparent 100%);
+    border-left:1px solid rgba(67,101,160,.2);
+    border-right:1px solid rgba(67,101,160,.2);
+    overflow:hidden;
+}
+
+.lane{
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:25%;
+    border-left:1px solid rgba(93,125,175,.16);
+}
+
+.lane:nth-child(1){left:0}
+.lane:nth-child(2){left:25%}
+.lane:nth-child(3){left:50%}
+.lane:nth-child(4){left:75%;border-right:1px solid rgba(93,125,175,.16)}
+
+.lane::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        transparent 0,
+        rgba(74,127,255,.025) 50%,
+        rgba(74,127,255,.08) 100%
+    );
+}
+
+.note{
+    position:absolute;
+    height:15px;
+    border-radius:2px;
+    background:linear-gradient(90deg,#fff,#6feaff,#a36cff);
+    box-shadow:
+        0 0 7px #6feaff,
+        0 0 17px rgba(53,231,255,.55);
+    z-index:4;
+    will-change:transform;
+}
+
+.note.long{
+    height:50px;
+}
+
+.hit-effect{
+    position:absolute;
+    width:90px;
+    height:3px;
+    transform:translate(-50%,-50%);
+    background:#fff;
+    box-shadow:0 0 10px #fff,0 0 30px var(--cyan);
+    pointer-events:none;
+    z-index:8;
+    animation:hit .18s ease-out forwards;
+}
+
+@keyframes hit{
+    from{opacity:1;transform:translate(-50%,-50%) scaleX(.6)}
+    to{opacity:0;transform:translate(-50%,-50%) scaleX(1.5)}
+}
+
+.judge-line{
+    position:absolute;
+    left:0;
+    right:0;
+    height:4px;
+    z-index:7;
+    background:linear-gradient(90deg,
+        transparent,
+        var(--cyan) 10%,
+        #fff 50%,
+        var(--cyan) 90%,
+        transparent);
+    box-shadow:0 0 10px var(--cyan),0 0 25px rgba(53,231,255,.65);
+}
+
+.judge-line::before,
+.judge-line::after{
+    content:"";
+    position:absolute;
+    top:-4px;
+    width:90px;
+    height:12px;
+    border-top:2px solid #fff;
+    border-bottom:2px solid #fff;
+}
+.judge-line::before{left:0}
+.judge-line::after{right:0}
+
+.key-display{
+    position:absolute;
+    bottom:18px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10;
+    display:flex;
+    width:min(720px,76vw);
+}
+
+.key{
+    width:25%;
+    height:34px;
+    margin:0 3px;
+    border:1px solid #294061;
+    background:rgba(11,21,39,.8);
+    color:#466182;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+}
+
+.key.active{
+    background:rgba(53,231,255,.25);
+    border-color:var(--cyan);
+    color:#fff;
+    box-shadow:0 0 18px rgba(53,231,255,.5);
+}
+
+.judgement{
+    position:absolute;
+    top:43%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    z-index:20;
+    text-align:center;
+    pointer-events:none;
+}
+
+.judgement .word{
+    font-size:28px;
+    font-weight:900;
+    letter-spacing:5px;
+    text-shadow:0 0 18px currentColor;
+}
+
+.judgement .combo{
+    margin-top:6px;
+    color:#8da4c9;
+    font-size:13px;
+    letter-spacing:4px;
+}
+
+.pause{
+    position:absolute;
+    inset:0;
+    z-index:50;
+    display:none;
+    background:rgba(2,4,9,.78);
+    backdrop-filter:blur(8px);
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+.pause.active{display:flex}
+
+.pause h2{
+    font-size:34px;
+    letter-spacing:7px;
+}
+
+.pause p{
+    color:#7991b7;
+    font-size:11px;
+    letter-spacing:2px;
+}
+
+/* =========================
+   RESULT
+========================= */
+
+#result{
+    background:
+        radial-gradient(circle at 50% 40%,rgba(47,91,170,.22),transparent 50%),
+        #04060b;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+#result.active{display:flex}
+
+.result-title{
+    font-size:42px;
+    letter-spacing:8px;
+    font-weight:900;
+}
+
+.result-song{
+    color:#7186a8;
+    margin:10px 0 35px;
+    letter-spacing:2px;
+}
+
+.result-score{
+    font-size:54px;
+    font-weight:900;
+    color:var(--cyan);
+    text-shadow:0 0 25px rgba(53,231,255,.7);
+}
+
+.result-stats{
+    margin:28px auto;
+    width:330px;
+    border-top:1px solid #23324c;
+    border-bottom:1px solid #23324c;
+    padding:15px 0;
+}
+
+.result-stats div{
+    display:flex;
+    justify-content:space-between;
+    margin:8px 0;
+    color:#8196b8;
+    font-size:12px;
+}
+
+.result-stats b{color:#fff}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:700px){
+    .logo{left:25px;top:25px}
+    .menu-panel{left:25px;right:25px;width:auto}
+    .controls{left:25px}
+    .settings-box{padding:28px}
+    .game-field,.key-display{width:94vw}
+    .loading-title{font-size:34px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     LOADING
+========================= -->
+<section id="loading" class="screen active">
+    <div>
+        <div class="loading-title">NEON // RHYTHM</div>
+        <div class="loading-sub">INITIALIZING RHYTHM SYSTEM</div>
+        <div class="loading-bar"><i></i></div>
+    </div>
+</section>
+
+<!-- =========================
+     MENU
+========================= -->
+<section id="menu" class="screen">
+
+    <div class="menu-bg"></div>
+
+    <div class="logo">
+        <div class="logo-main">NEON//RHYTHM</div>
+        <div class="logo-line"></div>
+    </div>
+
+    <div class="menu-panel">
+        <div class="menu-title">SELECT PATTERN</div>
+
+        <div class="song-list">
+
+            <div class="song selected" data-pattern="0">
+                <div>
+                    <div class="name">NEON DRIVE</div>
+                    <div class="artist">ORIGINAL TRACK</div>
+                </div>
+                <div class="difficulty">SC / 10</div>
+            </div>
+
+            <div class="song" data-pattern="1">
+                <div>
+                    <div class="name">DIGITAL RAIN</div>
+                    <div class="artist">ORIGINAL TRACK</div>
+                </div>
+                <div class="difficulty">SC / 11</div>
+            </div>
+
+            <div class="song" data-pattern="2">
+                <div>
+                    <div class="name">VOID SIGNAL</div>
+                    <div class="artist">ORIGINAL TRACK</div>
+                </div>
+                <div class="difficulty">SC / 12</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="controls">
+        <b>↑ ↓</b> SELECT &nbsp;&nbsp;
+        <b>ENTER</b> START &nbsp;&nbsp;
+        <b>ESC</b> BACK
+    </div>
+
+</section>
+
+<!-- =========================
+     SETTINGS
+========================= -->
+<section id="settings" class="screen">
+
+    <div class="settings-box">
+
+        <div class="settings-header">
+            <h1>GAME SETTINGS</h1>
+            <span>BEFORE START</span>
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-label">
+                <span>NOTE SPEED</span>
+                <span class="setting-value" id="speedValue">5.0x</span>
+            </div>
+
+            <input
+                id="speedSlider"
+                class="range"
+                type="range"
+                min="4"
+                max="7"
+                step="0.1"
+                value="5"
+            >
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-label">
+                <span>JUDGEMENT LINE</span>
+                <span class="setting-value" id="offsetValue">0</span>
+            </div>
+
+            <input
+                id="offsetSlider"
+                class="range"
+                type="range"
+                min="-1"
+                max="1"
+                step="0.01"
+                value="0"
+            >
+
+            <div class="offset-preview">
+                <div class="preview-note"></div>
+                <div class="offset-line" id="previewLine"></div>
+            </div>
+        </div>
+
+        <div class="setting-buttons">
+            <button class="btn" id="backSettings">BACK</button>
+            <button class="btn primary" id="startGame">START GAME</button>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     GAME
+========================= -->
+<section id="game" class="screen">
+
+    <div class="game-top">
+        <div>
+            <span class="game-song" id="gameSong">NEON DRIVE</span>
+            <span class="game-pattern" id="gamePattern">SC / 10</span>
+        </div>
+
+        <div class="game-score" id="score">0000000</div>
+    </div>
+
+    <div class="speed-display">
+        <small>SPEED</small>
+        <strong id="gameSpeed">5.0x</strong>
+    </div>
+
+    <div class="game-field" id="gameField">
+
+        <div class="lane"></div>
+        <div class="lane"></div>
+        <div class="lane"></div>
+        <div class="lane"></div>
+
+        <div class="judge-line" id="judgeLine"></div>
+        <div class="judgement" id="judgement"></div>
+
+    </div>
+
+    <div class="key-display">
+        <div class="key" data-key="d">D</div>
+        <div class="key" data-key="f">F</div>
+        <div class="key" data-key="j">J</div>
+        <div class="key" data-key="k">K</div>
+    </div>
+
+    <div class="pause" id="pause">
+        <div>
+            <h2>PAUSED</h2>
+            <p>ESC TO RESUME</p>
+        </div>
+    </div>
+
+</section>
+
+<!-- =========================
+     RESULT
+========================= -->
+<section id="result" class="screen">
+
+    <div>
+        <div class="result-title">RESULT</div>
+        <div class="result-song" id="resultSong">NEON DRIVE</div>
+
+        <div class="result-score" id="resultScore">0000000</div>
+
+        <div class="result-stats">
+            <div><span>MAX COMBO</span><b id="resultCombo">0</b></div>
+            <div><span>PERFECT</span><b id="resultPerfect">0</b></div>
+            <div><span>GOOD</span><b id="resultGood">0</b></div>
+            <div><span>MISS</span><b id="resultMiss">0</b></div>
+        </div>
+
+        <button class="btn primary" id="returnMenu" style="width:260px">
+            RETURN TO SELECT
+        </button>
+    </div>
+
+</section>
+
+
+<script>
+"use strict";
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+const SETTINGS = {
+    speed: 5.0,
+    offset: 0
+};
+
+const KEYS = ["d","f","j","k"];
+
+/*
+    0 = D
+    1 = F
+    2 = J
+    3 = K
+
+    모든 패턴은 동시에 최대 3키까지만 눌리도록 구성.
+*/
+
+const PATTERNS = [
+
+/* =========================================================
+   PATTERN 1
+   SC 느낌의 기본 패턴
+========================================================= */
+
+[
+    [800,0],[1050,1],[1300,2],[1550,3],
+    [1800,0],[1950,1],[2100,2],
+    [2350,3],[2500,2],[2650,1],[2800,0],
+
+    [3150,0,1],[3450,2],[3600,3],
+    [3850,1],[4000,2],[4150,0,3],
+
+    [4500,0],[4650,1],[4800,2],[4950,3],
+    [5200,0,2],[5450,1],[5600,3],
+
+    [6000,0],[6150,1],[6300,2],[6450,3],
+    [6700,1,2],[7000,0],[7150,3],
+
+    [7500,0,1],[7650,2,3],
+    [7900,1],[8050,0],[8200,2],[8350,3],
+
+    [8700,0,2],[8850,1],[9000,3],
+    [9300,0],[9450,1,2],[9600,3],
+
+    [9950,0],[10100,1],[10250,2],[10400,3],
+    [10700,0,3],[10950,1,2],
+    [11200,0,1,2],[11500,3]
+],
+
+/* =========================================================
+   PATTERN 2
+========================================================= */
+
+[
+    [700,0],[850,2],[1000,1],[1150,3],
+    [1400,1,2],[1650,0],[1800,3],
+    [2000,0,2],[2200,1],[2350,3],
+
+    [2600,0],[2750,1],[2900,2],[3050,3],
+    [3300,2],[3450,1],[3600,0],
+    [3800,1,3],[4000,0,2],
+
+    [4300,0],[4450,2],[4600,1],[4750,3],
+    [5000,0,1],[5150,2],[5300,3],
+    [5500,1,2],[5700,0],
+
+    [6000,3],[6150,2],[6300,1],[6450,0],
+    [6700,0,3],[6900,1,2],
+    [7150,0],[7300,1],[7450,2],[7600,3],
+
+    [7900,0,2],[8100,1],[8250,3],
+    [8500,1,3],[8700,0,2],
+    [8950,0],[9100,1],[9250,2],[9400,3],
+
+    [9700,0,1,3],[9950,2],
+    [10200,0],[10350,2],[10500,1],[10650,3],
+    [10900,0,2],[11100,1,3]
+],
+
+/* =========================================================
+   PATTERN 3
+   조금 더 밀도 있는 SC 스타일
+========================================================= */
+
+[
+    [650,0],[775,1],[900,2],[1025,3],
+    [1200,0,2],[1400,1],[1525,3],
+    [1700,0],[1825,1],[1950,2],[2075,3],
+
+    [2300,0,1],[2450,2],[2600,3],
+    [2750,1,2],[2900,0],[3050,3],
+    [3250,0,2],[3400,1,3],
+
+    [3700,0],[3825,1],[3950,2],[4075,3],
+    [4250,1,3],[4400,0,2],
+    [4600,0],[4725,2],[4850,1],[4975,3],
+
+    [5200,0,1,2],[5450,3],
+    [5600,1],[5725,2],[5850,0],[5975,3],
+    [6150,0,2],[6300,1,3],
+
+    [6600,0],[6725,1],[6850,2],[6975,3],
+    [7150,0,3],[7300,1,2],
+    [7500,0],[7625,2],[7750,1],[7875,3],
+
+    [8100,0,1],[8225,2,3],
+    [8400,0,2],[8525,1],
+    [8700,3],[8825,2],[8950,1],[9075,0],
+
+    [9350,0,1,3],[9600,2],
+    [9800,0],[9925,1],[10050,2],[10175,3],
+    [10400,0,2],[10550,1,3],
+    [10800,0,1,2],[11100,3]
+]
+
+];
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const $ = id => document.getElementById(id);
+
+const screens = {
+    loading:$("loading"),
+    menu:$("menu"),
+    settings:$("settings"),
+    game:$("game"),
+    result:$("result")
+};
+
+const songItems = [...document.querySelectorAll(".song")];
+
+let selectedPattern = 0;
+let currentPattern = 0;
+
+let notes = [];
+let activeKeys = new Set();
+
+let gameRunning = false;
+let paused = false;
+
+let startTime = 0;
+let pauseStart = 0;
+let pausedTotal = 0;
+
+let score = 0;
+let combo = 0;
+let maxCombo = 0;
+
+let perfect = 0;
+let good = 0;
+let miss = 0;
+
+let animationFrame = 0;
+
+
+/* =========================================================
+   SCREEN
+========================================================= */
+
+function showScreen(name){
+
+    Object.values(screens).forEach(s => {
+        s.classList.remove("active");
+    });
+
+    screens[name].classList.add("active");
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+setTimeout(()=>{
+    showScreen("menu");
+},1800);
+
+
+/* =========================================================
+   SONG SELECT
+========================================================= */
+
+function updateSongSelection(){
+
+    songItems.forEach((item,i)=>{
+        item.classList.toggle("selected",i === selectedPattern);
+    });
+}
+
+document.addEventListener("keydown",e=>{
+
+    if(
+        ["ArrowUp","ArrowDown"," ","Enter","Escape"].includes(e.key)
+    ){
+        e.preventDefault();
+    }
+
+    if(screens.menu.classList.contains("active")){
+
+        if(e.key === "ArrowUp"){
+            selectedPattern =
+                (selectedPattern - 1 + PATTERNS.length) %
+                PATTERNS.length;
+
+            updateSongSelection();
+        }
+
+        if(e.key === "ArrowDown"){
+            selectedPattern =
+                (selectedPattern + 1) %
+                PATTERNS.length;
+
+            updateSongSelection();
+        }
+
+        if(e.key === "Enter"){
+            currentPattern = selectedPattern;
+            showScreen("settings");
+        }
+    }
+
+    else if(screens.settings.classList.contains("active")){
+
+        if(e.key === "Escape"){
+            showScreen("menu");
+        }
+    }
+
+    else if(screens.game.classList.contains("active")){
+
+        if(e.key === "Escape"){
+            togglePause();
+        }
+
+        /*
+            게임 시작 후에는 속도만 변경 가능.
+            ↑ = 0.1 증가
+            ↓ = 0.1 감소
+        */
+
+        if(!paused && e.key === "ArrowUp"){
+            changeSpeed(.1);
+        }
+
+        if(!paused && e.key === "ArrowDown"){
+            changeSpeed(-.1);
+        }
+    }
+
+});
+
+
+songItems.forEach((item,i)=>{
+
+    item.addEventListener("click",()=>{
+        selectedPattern = i;
+        updateSongSelection();
+        currentPattern = i;
+        showScreen("settings");
+    });
+
+});
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+$("speedSlider").addEventListener("input",e=>{
+
+    SETTINGS.speed = Number(e.target.value);
+
+    $("speedValue").textContent =
+        SETTINGS.speed.toFixed(1) + "x";
+});
+
+
+$("offsetSlider").addEventListener("input",e=>{
+
+    SETTINGS.offset = Number(e.target.value);
+
+    $("offsetValue").textContent =
+        SETTINGS.offset > 0
+        ? "+" + SETTINGS.offset.toFixed(2)
+        : SETTINGS.offset.toFixed(2);
+
+    updatePreviewLine();
+});
+
+
+function updatePreviewLine(){
+
+    /*
+        -1 ~ +1을 실제 게임에서 아주 작은 위치 차이로 변환.
+        0이 기본 위치.
+    */
+
+    const px = SETTINGS.offset * 35;
+
+    $("previewLine").style.top =
+        `calc(50% + ${px}px)`;
+}
+
+
+$("backSettings").onclick = ()=>{
+    showScreen("menu");
+};
+
+
+$("startGame").onclick = ()=>{
+    startGame();
+};
+
+
+/* =========================================================
+   SPEED
+========================================================= */
+
+function changeSpeed(amount){
+
+    SETTINGS.speed += amount;
+
+    SETTINGS.speed =
+        Math.max(
+            4,
+            Math.min(
+                7,
+                Math.round(SETTINGS.speed * 10) / 10
+            )
+        );
+
+    $("gameSpeed").textContent =
+        SETTINGS.speed.toFixed(1) + "x";
+}
+
+
+/* =========================================================
+   GAME START
+========================================================= */
+
+function startGame(){
+
+    score = 0;
+    combo = 0;
+    maxCombo = 0;
+
+    perfect = 0;
+    good = 0;
+    miss = 0;
+
+    paused = false;
+    gameRunning = true;
+
+    pausedTotal = 0;
+
+    $("gameSong").textContent =
+        ["NEON DRIVE","DIGITAL RAIN","VOID SIGNAL"][currentPattern];
+
+    $("gamePattern").textContent =
+        ["SC / 10","SC / 11","SC / 12"][currentPattern];
+
+    $("gameSpeed").textContent =
+        SETTINGS.speed.toFixed(1) + "x";
+
+    $("score").textContent = "0000000";
+
+    showScreen("game");
+
+    createNotes();
+
+    /*
+        판정선:
+        기본값 0 = 가장 많이 사용하는 중앙 기준.
+        -1 ~ +1은 실제 화면에서는 작은 픽셀 차이만 발생.
+    */
+
+    const fieldHeight =
+        $("gameField").clientHeight;
+
+    const baseY =
+        fieldHeight - 105;
+
+    const offsetPixels =
+        SETTINGS.offset * 35;
+
+    $("judgeLine").style.top =
+        (baseY + offsetPixels) + "px";
+
+    startTime =
+        performance.now() + 700;
+
+    animationFrame =
+        requestAnimationFrame(gameLoop);
+}
+
+
+/* =========================================================
+   CREATE NOTES
+========================================================= */
+
+function createNotes(){
+
+    notes.forEach(n=>{
+        if(n.el) n.el.remove();
+    });
+
+    notes = [];
+
+    const pattern = PATTERNS[currentPattern];
+
+    const field = $("gameField");
+
+    for(const data of pattern){
+
+        const time = data[0];
+        const lanes = data.slice(1);
+
+        /*
+            동시에 3개까지만 허용.
+        */
+
+        const limited =
+            lanes.slice(0,3);
+
+        limited.forEach(lane=>{
+
+            const el =
+                document.createElement("div");
+
+            el.className = "note";
+
+            /*
+                너무 얇지도 두껍지도 않은 기본 노트.
+            */
+
+            el.style.width =
+                `calc(25% - 12px)`;
+
+            el.style.left =
+                `calc(${lane * 25}% + 6px)`;
+
+            field.appendChild(el);
+
+            notes.push({
+                time,
+                lane,
+                el,
+                hit:false,
+                missed:false
+            });
+        });
+    }
+}
+
+
+/* =========================================================
+   GAME LOOP
+========================================================= */
+
+function gameLoop(now){
+
+    if(!gameRunning){
+        return;
+    }
+
+    if(paused){
+
+        animationFrame =
+            requestAnimationFrame(gameLoop);
+
+        return;
+    }
+
+    const elapsed =
+        now - startTime;
+
+    const fieldHeight =
+        $("gameField").clientHeight;
+
+    const judgeY =
+        fieldHeight - 105 +
+        SETTINGS.offset * 35;
+
+    /*
+        속도가 높을수록 노트가 빠르게 이동.
+        requestAnimationFrame 기반이라 프레임 독립적.
+    */
+
+    const travel =
+        1100 / SETTINGS.speed;
+
+    let remaining = 0;
+
+    for(const note of notes){
+
+        if(note.hit || note.missed){
+            continue;
+        }
+
+        const delta =
+            note.time - elapsed;
+
+        /*
+            노트가 판정선으로 접근하는 위치.
+        */
+
+        const progress =
+            1 - delta / travel;
+
+        const y =
+            -20 +
+            progress *
+            (judgeY + 20);
+
+        note.el.style.transform =
+            `translate3d(0,${y}px,0)`;
+
+        /*
+            판정선 지나감
+        */
+
+        if(
+            delta < -150
+        ){
+            missNote(note);
+        }
+        else{
+            remaining++;
+        }
+    }
+
+    if(
+        remaining === 0 &&
+        elapsed > getLastNoteTime() + 700
+    ){
+        finishGame();
+        return;
+    }
+
+    animationFrame =
+        requestAnimationFrame(gameLoop);
+}
+
+
+function getLastNoteTime(){
+
+    let last = 0;
+
+    for(const n of notes){
+        if(n.time > last){
+            last = n.time;
+        }
+    }
+
+    return last;
+}
+
+
+/* =========================================================
+   INPUT / JUDGEMENT
+========================================================= */
+
+document.addEventListener("keydown",e=>{
+
+    if(!gameRunning || paused){
+        return;
+    }
+
+    const key =
+        e.key.toLowerCase();
+
+    if(!KEYS.includes(key)){
+        return;
+    }
+
+    /*
+        키를 계속 누르고 있는 동안
+        반복 입력되는 것을 방지.
+    */
+
+    if(activeKeys.has(key)){
+        return;
+    }
+
+    activeKeys.add(key);
+
+    const keyIndex =
+        KEYS.indexOf(key);
+
+    const keyElement =
+        document.querySelector(
+            `.key[data-key="${key}"]`
+        );
+
+    if(keyElement){
+        keyElement.classList.add("active");
+    }
+
+    hitLane(keyIndex);
+});
+
+
+document.addEventListener("keyup",e=>{
+
+    const key =
+        e.key.toLowerCase();
+
+    activeKeys.delete(key);
+
+    const keyElement =
+        document.querySelector(
+            `.key[data-key="${key}"]`
+        );
+
+    if(keyElement){
+        keyElement.classList.remove("active");
+    }
+});
+
+
+function hitLane(lane){
+
+    const now =
+        performance.now() -
+        startTime;
+
+    let target = null;
+    let smallest = Infinity;
+
+    for(const note of notes){
+
+        if(
+            note.hit ||
+            note.missed ||
+            note.lane !== lane
+        ){
+            continue;
+        }
+
+        const distance =
+            Math.abs(note.time - now);
+
+        if(distance < smallest){
+
+            smallest = distance;
+            target = note;
+        }
+    }
+
+    /*
+        판정 범위
+        PERFECT : ±45ms
+        GOOD    : ±100ms
+    */
+
+    if(!target){
+        return;
+    }
+
+    if(smallest <= 45){
+
+        hitNote(target,"PERFECT",1000);
+
+    }
+    else if(smallest <= 100){
+
+        hitNote(target,"GOOD",500);
+
+    }
+}
+
+
+function hitNote(note,type,points){
+
+    note.hit = true;
+
+    note.el.style.display = "none";
+
+    if(type === "PERFECT"){
+        perfect++;
+        combo++;
+        score += points + combo * 5;
+    }
+    else{
+        good++;
+        combo++;
+        score += points + combo * 2;
+    }
+
+    maxCombo =
+        Math.max(maxCombo,combo);
+
+    $("score").textContent =
+        String(score).padStart(7,"0");
+
+    showJudgement(type);
+
+    createHitEffect(note);
+}
+
+
+function missNote(note){
+
+    note.missed = true;
+
+    note.el.style.display = "none";
+
+    miss++;
+
+    combo = 0;
+
+    showJudgement("MISS");
+}
+
+
+/* =========================================================
+   JUDGEMENT UI
+========================================================= */
+
+let judgementTimer = 0;
+
+function showJudgement(type){
+
+    const box =
+        $("judgement");
+
+    clearTimeout(judgementTimer);
+
+    let color = "#fff";
+
+    if(type === "PERFECT"){
+        color = "#53eaff";
+    }
+    else if(type === "GOOD"){
+        color = "#b887ff";
+    }
+    else{
+        color = "#ff5b91";
+    }
+
+    box.innerHTML = `
+        <div class="word" style="color:${color}">
+            ${type}
+        </div>
+        ${
+            type !== "MISS"
+            ? `<div class="combo">${combo} COMBO</div>`
+            : ""
+        }
+    `;
+
+    judgementTimer =
+        setTimeout(()=>{
+            box.innerHTML = "";
+        },300);
+}
+
+
+function createHitEffect(note){
+
+    const effect =
+        document.createElement("div");
+
+    effect.className =
+        "hit-effect";
+
+    effect.style.left =
+        note.el.offsetLeft +
+        note.el.offsetWidth / 2 +
+        "px";
+
+    effect.style.top =
+        (
+            $("gameField").clientHeight -
+            105 +
+            SETTINGS.offset * 35
+        ) + "px";
+
+    $("gameField").appendChild(effect);
+
+    setTimeout(()=>{
+        effect.remove();
+    },200);
+}
+
+
+/* =========================================================
+   PAUSE
+========================================================= */
+
+function togglePause(){
+
+    paused = !paused;
+
+    $("pause").classList.toggle(
+        "active",
+        paused
+    );
+
+    if(paused){
+
+        pauseStart =
+            performance.now();
+
+    }
+    else{
+
+        /*
+            일시정지한 시간만큼 시작 시간을 밀어서
+            노트가 순간이동하지 않도록 함.
+        */
+
+        pausedTotal +=
+            performance.now() -
+            pauseStart;
+
+        startTime +=
+            performance.now() -
+            pauseStart;
+    }
+}
+
+
+/* =========================================================
+   FINISH
+========================================================= */
+
+function finishGame(){
+
+    gameRunning = false;
+
+    cancelAnimationFrame(animationFrame);
+
+    $("resultSong").textContent =
+        ["NEON DRIVE","DIGITAL RAIN","VOID SIGNAL"][currentPattern];
+
+    $("resultScore").textContent =
+        String(score).padStart(7,"0");
+
+    $("resultCombo").textContent =
+        maxCombo;
+
+    $("resultPerfect").textContent =
+        perfect;
+
+    $("resultGood").textContent =
+        good;
+
+    $("resultMiss").textContent =
+        miss;
+
+    showScreen("result");
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+$("returnMenu").onclick = ()=>{
+
+    notes.forEach(n=>{
+        if(n.el) n.el.remove();
+    });
+
+    notes = [];
+
+    activeKeys.clear();
+
+    showScreen("menu");
+};
+
+
+/* =========================================================
+   PREVENT CONTEXT MENU
+========================================================= */
+
+document.addEventListener("contextmenu",e=>{
+    e.preventDefault();
+});
+
+
+/* =========================================================
+   INITIAL
+========================================================= */
+
+updateSongSelection();
+updatePreviewLine();
+
+</script>
+
+</body>
+</html>
